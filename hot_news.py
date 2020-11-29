@@ -3,6 +3,15 @@ import json
 from lxml import etree
 import re
 import time
+import json
+def search(url):
+    header = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36"
+    }
+    page = requests.get(url=url, headers=header, timeout=100)
+    page.encoding = page.apparent_encoding
+    page = page.text
+    return page
 #百度热搜的信息获取，实时信息，当天热搜，本周热搜
 def baidutimehot(url):
     now_url = "http://top.baidu.com/buzz?b=1&fr=topindex"
@@ -18,7 +27,7 @@ def baidutimehot(url):
         "b": "1",
         "fr": "topindex"
     }
-    page = requests.post(url=url, data=data, headers=header, cookies=cookie, timeout=100)
+    page = requests.get(url=url, data=data, headers=header, cookies=cookie, timeout=100)
     page.encoding = page.apparent_encoding
     page = page.text
     # print(page)
@@ -39,12 +48,7 @@ def baidutimehot(url):
         print("获得百度热搜出现错误，请检查百度热搜检索函数")
 def weibohot():
     url="https://s.weibo.com/top/summary"
-    header = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36"
-    }
-    page = requests.post(url=url, headers=header, timeout=100)
-    page.encoding = page.apparent_encoding
-    page = page.text
+    page=search(url)
     #print(page)
     tree = etree.HTML(page)
     try:
@@ -67,7 +71,7 @@ def weibohot():
             hot_url='https://s.weibo.com'+list_url[i]
             weibo_hoturl.append(hot_url)
         print(weibo_hoturl)
-        print(len(weibo_hoturl))
+        #print(len(weibo_hoturl))
 
     except:
         print("微博查询出现错误，请检查微博的检索函数")
@@ -81,7 +85,7 @@ def zhihuhot():
         "cookie" : '_zap=82c61efe-ae88-4dce-94ea-0986d83a43fc; d_c0="ADCZDssODBKPToMRarg-rfhcaeuvZ2Cur0c=|1602826829"; _xsrf=Sdn2x6R3IvqSgq9tpiwtg7koNMQ6WtwZ; q_c1=e374d817a37949bda35f684c72825a28|1603789423000|1603789423000; SESSIONID=p2HLcQqPOQr5zzRzWa39jjbTY8p5RQ8DSb3ReUR63Bf; JOID=UF8TAEq9I20miv4SJbx1e7Nc8RgzyBAgaOqqYnDxdx4W8odFXm5JqXiM-hYii15GayKxTmApUpuYj0aubwwcNOA=; osd=UFwUC0i9IGotiP4RIrd3e7Bb-hozyxcrauqpZXvzdx0R-YVFXWlCq3iP_R0gi11BYCCxTWciUJubiE2sbw8bP-I=; capsion_ticket="2|1:0|10:1606643606|14:capsion_ticket|44:ZThhMjFlMDNkMmMzNGNjNTgyNmViYjAyYmRiNzE5MjA=|f7a586e5647514122d62812cbf3aba82187b041e4def512909b961a872445342"; z_c0="2|1:0|10:1606643629|4:z_c0|92:Mi4xUHhLSkF3QUFBQUFBTUprT3l3NE1FaWNBQUFDRUFsVk5yZnpxWHdESV9MZlVPZkZwNmM2YVRrSkZtMllTOEt1Zjh3|cc94526c08564f724799a6841cb8078f9e1cef07f3bb71ed12657227b26158fa"; tst=h; tshl=; KLBRSID=fe0fceb358d671fa6cc33898c8c48b48|1606643855|1606640152'
     }
 
-    page = requests.post(url=url, headers=header, cookies=cookie, timeout=100)
+    page = requests.get(url=url, headers=header, cookies=cookie, timeout=100)
     page.encoding = page.apparent_encoding
     page = page.text
     #print(page)
@@ -106,25 +110,39 @@ def zhihuhot():
         print("知乎热搜查询错误，请检查热搜的检索函数")
 #抖音排行榜数据
 def tiktok():
-    pass
+    url="https://www.iesdouyin.com/web/api/v2/hotsearch/billboard/word/"
+    page=search(url)
+    detail = json.loads(page)
+    content=detail["word_list"]
+    #print(content)
+    list_content=[]
+    list_number=[]
+    for i in content:
+        list_content.append(i["word"])
+        list_number.append(i["hot_value"])
+    #print(list_content)
+    #print(list_number)
+    detail=dict(zip(list_content,list_number))
+    print(detail)
+#检索主函数
 if __name__=="__main__":
 
     now_url = "http://top.baidu.com/buzz?b=1&fr=topindex"
     today_url="http://top.baidu.com/buzz?b=341&c=513&fr=topcategory_c513"
     week_url="http://top.baidu.com/buzz?b=42&c=513&fr=topbuzz_b341_c513"
     #百度热搜
-    #print("------百度实时热搜--------")
-    #baidutimehot(now_url)
-    #print("------百度今日热搜--------")
-    #baidutimehot(today_url)
-    #print("------百度本周热搜--------")
-    #baidutimehot(week_url)
+    print("------百度实时热搜--------")
+    baidutimehot(now_url)
+    print("------百度今日热搜--------")
+    baidutimehot(today_url)
+    print("------百度本周热搜--------")
+    baidutimehot(week_url)
     #新浪微博热搜
-    #print("------新浪微博热搜--------")
-    #weibohot()
+    print("------新浪微博热搜--------")
+    weibohot()
     #知乎热搜
-    #print("------知乎实时热搜--------")
-    #zhihuhot()
+    print("------知乎实时热搜--------")
+    zhihuhot()
     print("-------抖音实时榜单--------")
     tiktok()
 
