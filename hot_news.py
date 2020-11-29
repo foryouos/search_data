@@ -2,6 +2,7 @@ import requests
 import json
 from lxml import etree
 import re
+import sys
 import time
 import json
 def search(url):
@@ -124,6 +125,35 @@ def tiktok():
     #print(list_number)
     detail=dict(zip(list_content,list_number))
     print(detail)
+def tiktokvideo():
+    url = "https://www.iesdouyin.com/web/api/v2/hotsearch/billboard/aweme/"
+    header = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36"
+    }
+    #print(sys.getdefaultencoding())
+    page = requests.get(url=url, headers=header, timeout=100)
+    page=page.content.decode("utf-8")
+    detail = json.loads(page)
+    #print(detail)
+    content = detail["aweme_list"]  #视频信息的精确数据
+    for i in content:
+        aweme_info=i["aweme_info"]
+        #print(i)
+        #获取视频名称
+        share_info=aweme_info["share_info"]
+        share_title=share_info["share_title"]
+        print(share_title)
+        #获得热搜值
+        hot_value=i["hot_value"]
+        print(hot_value)
+        #获取视频URL
+        share_url=aweme_info["share_url"]
+        print("-----分享的URL----")
+        print(share_url)
+        url_list=aweme_info["video"]["play_addr"]["url_list"]
+        print("-----下载的url，打开速度特别慢-----")
+        print(url_list)
+        #
 #检索主函数
 if __name__=="__main__":
 
@@ -131,20 +161,22 @@ if __name__=="__main__":
     today_url="http://top.baidu.com/buzz?b=341&c=513&fr=topcategory_c513"
     week_url="http://top.baidu.com/buzz?b=42&c=513&fr=topbuzz_b341_c513"
     #百度热搜
-    print("------百度实时热搜--------")
-    baidutimehot(now_url)
-    print("------百度今日热搜--------")
-    baidutimehot(today_url)
-    print("------百度本周热搜--------")
-    baidutimehot(week_url)
+    #print("------百度实时热搜--------")
+    #baidutimehot(now_url)
+    #print("------百度今日热搜--------")
+    #baidutimehot(today_url)
+    #print("------百度本周热搜--------")
+    #baidutimehot(week_url)
     #新浪微博热搜
-    print("------新浪微博热搜--------")
-    weibohot()
+    #print("------新浪微博热搜--------")
+    #weibohot()
     #知乎热搜
-    print("------知乎实时热搜--------")
-    zhihuhot()
-    print("-------抖音实时榜单--------")
-    tiktok()
+    #print("------知乎实时热搜--------")
+    #zhihuhot()
+    #print("-------抖音实时榜单--------")
+    #tiktok()
+    print("------抖音视频榜-----")
+    tiktokvideo()
 
 
 
