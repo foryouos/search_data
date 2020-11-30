@@ -161,20 +161,20 @@ if __name__=="__main__":
     today_url="http://top.baidu.com/buzz?b=341&c=513&fr=topcategory_c513"
     week_url="http://top.baidu.com/buzz?b=42&c=513&fr=topbuzz_b341_c513"
     #百度热搜
-    #print("------百度实时热搜--------")
-    #baidutimehot(now_url)
-    #print("------百度今日热搜--------")
-    #baidutimehot(today_url)
-    #print("------百度本周热搜--------")
-    #baidutimehot(week_url)
+    print("------百度实时热搜--------")
+    baidutimehot(now_url)
+    print("------百度今日热搜--------")
+    baidutimehot(today_url)
+    print("------百度本周热搜--------")
+    baidutimehot(week_url)
     #新浪微博热搜
-    #print("------新浪微博热搜--------")
-    #weibohot()
+    print("------新浪微博热搜--------")
+    weibohot()
     #知乎热搜
-    #print("------知乎实时热搜--------")
-    #zhihuhot()
-    #print("-------抖音实时榜单--------")
-    #tiktok()
+    print("------知乎实时热搜--------")
+    zhihuhot()
+    print("-------抖音实时榜单--------")
+    tiktok()
     print("------抖音视频榜-----")
     tiktokvideo()
 
