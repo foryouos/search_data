@@ -1,7 +1,7 @@
 import requests
 import json
 import time
-
+#仅支持咪咕平台
 print("调用魔声检索音乐数据,目前仅咪咕平台(mg)，网易云音乐MV，没有问题")
 #content=input("输入需要下载的平台")
 songs=input("请输入你要搜索的歌曲")
