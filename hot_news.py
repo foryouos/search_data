@@ -136,25 +136,67 @@ def tiktokvideo():
     detail = json.loads(page)
     #print(detail)
     content = detail["aweme_list"]  #视频信息的精确数据
+    titokvideoname={}
+    tiktok_url={}
+    tiktok_download={}
     for i in content:
         aweme_info=i["aweme_info"]
         #print(i)
         #获取视频名称
         share_info=aweme_info["share_info"]
         share_title=share_info["share_title"]
-        print(share_title)
+        #print(share_title)
         #获得热搜值
         hot_value=i["hot_value"]
-        print(hot_value)
+        #print(hot_value)
         #获取视频URL
         share_url=aweme_info["share_url"]
-        print("-----分享的URL----")
-        print(share_url)
+        #print("-----分享的URL----")
+        #print(share_url)
         url_list=aweme_info["video"]["play_addr"]["url_list"]
-        print("-----下载的url，打开速度特别慢-----")
-        print(url_list)
+        #print("-----下载的url，打开速度特别慢-----")
+        #print(url_list)
         #
+
+        tiktok_url.update({share_title:share_url})
+        tiktok_download.update({share_title:url_list})
+        titokvideoname.update({share_title:hot_value})
+
+    #print(titokvideoname)
+    print(tiktok_url)
 #检索主函数
+def today_toutiao():
+    #count后面紧跟的数字为显示热搜榜前几
+    search_url="https://api.toutiaoapi.com/api/feed/hotboard_online/v1/?category=hotboard_online&count=50"
+    header = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36"
+    }
+    page = requests.get(url=search_url, headers=header, timeout=100)
+    page.encoding = page.apparent_encoding
+    #print(detail)
+    detail = page.content.decode("utf-8")
+    json_detail=json.loads(detail)
+    data=json_detail["data"]
+    toutiao={}
+    for i in data:
+        content=i["content"]
+        #print(content)
+        #print(type(content))  #由于后面一直对需要为整型报错，所以此处判断content类型
+        content=json.loads(content)    #将str类型转化为json格式
+        #print(type(content))  #再次判断
+        raw_data=content["raw_data"]
+        #print(raw_data)
+        title=raw_data["title"]
+
+        #print(title)
+        #如何获取url连接
+        #https://so.toutiao.com/search/?keyword=%23+“”+%23
+        title_url="https://so.toutiao.com/search/?keyword=%23"+str(title)+"%23"
+        #print(title_url)
+        toutiao.update({title:title_url})
+    print(toutiao)
+
+
 if __name__=="__main__":
 
     now_url = "http://top.baidu.com/buzz?b=1&fr=topindex"
@@ -162,21 +204,23 @@ if __name__=="__main__":
     week_url="http://top.baidu.com/buzz?b=42&c=513&fr=topbuzz_b341_c513"
     #百度热搜
     print("------百度实时热搜--------")
-    baidutimehot(now_url)
+    #baidutimehot(now_url)
     print("------百度今日热搜--------")
-    baidutimehot(today_url)
+    #baidutimehot(today_url)
     print("------百度本周热搜--------")
-    baidutimehot(week_url)
+    #baidutimehot(week_url)
     #新浪微博热搜
     print("------新浪微博热搜--------")
-    weibohot()
+    #weibohot()
     #知乎热搜
     print("------知乎实时热搜--------")
-    zhihuhot()
+    #zhihuhot()
     print("-------抖音实时榜单--------")
-    tiktok()
+    #tiktok()
     print("------抖音视频榜-----")
-    tiktokvideo()
+    #tiktokvideo()
+    print("------今日头条热搜榜-----")
+    #today_toutiao()
 
 
 
